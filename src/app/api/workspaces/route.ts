@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth/nextauth";
-import { createWorkspace, getUserWorkspaces, softDeleteWorkspace } from "@/services/workspace";
+import { createWorkspace, getUserWorkspaces, softDeleteWorkspace, updateWorkspaceBySlug } from "@/services/workspace";
 import { db } from "@/lib/db";
 
 // Prevent caching of user-specific data
