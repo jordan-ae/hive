@@ -1,9 +1,11 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Users, Calendar } from "lucide-react";
+import { Users, Calendar, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { TaskData } from "@/hooks/useWorkspaceTasks";
+import { WorkflowStatusBadge } from "@/app/w/[slug]/task/[...taskParams]/components/WorkflowStatusBadge";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { formatRelativeTime } from "@/lib/utils";
 
 interface TaskCardProps {
   task: TaskData;
@@ -17,31 +19,6 @@ export function TaskCard({ task, workspaceSlug }: TaskCardProps) {
     router.push(`/w/${workspaceSlug}/task/${task.id}`);
   };
 
-  const getStatusVariant = (status: TaskData["status"]) => {
-    switch (status) {
-      case "DONE":
-        return "default";
-      case "IN_PROGRESS":
-        return "secondary";
-      default:
-        return "outline";
-    }
-  };
-
-  const getStatusLabel = (status: TaskData["status"]) => {
-    switch (status) {
-      case "TODO":
-        return "To Do";
-      case "IN_PROGRESS":
-        return "In Progress";
-      case "DONE":
-        return "Done";
-      case "CANCELLED":
-        return "Cancelled";
-      default:
-        return status;
-    }
-  };
 
   return (
     <div
@@ -53,19 +30,24 @@ export function TaskCard({ task, workspaceSlug }: TaskCardProps) {
           {task.title}
         </h4>
         <div className="flex items-center gap-2">
-          <Badge variant={getStatusVariant(task.status)}>
-            {getStatusLabel(task.status)}
-          </Badge>
+          <div className="px-2 py-1 rounded-full border bg-background text-xs">
+            <WorkflowStatusBadge status={task.workflowStatus} />
+          </div>
         </div>
       </div>
       
-      {task.description && (
-        <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
-          {task.description}
-        </p>
-      )}
-      
       <div className="flex items-center gap-4 text-xs text-muted-foreground">
+        <div className="flex items-center gap-2">
+          <Avatar className="size-5">
+            <AvatarImage src={task.createdBy.image || undefined} />
+            <AvatarFallback className="text-xs">
+              <User className="w-3 h-3" />
+            </AvatarFallback>
+          </Avatar>
+          <span>
+            {task.createdBy.githubAuth?.githubUsername || task.createdBy.name || task.createdBy.email}
+          </span>
+        </div>
         {task.assignee && (
           <div className="flex items-center gap-1">
             <Users className="w-3 h-3" />
@@ -74,7 +56,7 @@ export function TaskCard({ task, workspaceSlug }: TaskCardProps) {
         )}
         <div className="flex items-center gap-1">
           <Calendar className="w-3 h-3" />
-          <span>{new Date(task.createdAt).toLocaleDateString()}</span>
+          <span>{formatRelativeTime(task.createdAt)}</span>
         </div>
       </div>
     </div>

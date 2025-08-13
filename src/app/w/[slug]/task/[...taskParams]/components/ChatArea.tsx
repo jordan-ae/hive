@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ChatMessage as ChatMessageType, Option, WorkflowStatus } from "@/lib/chat";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
+import { getAgentIcon } from "@/lib/icons";
 
 interface ChatAreaProps {
   messages: ChatMessageType[];
@@ -44,7 +45,7 @@ export function ChatArea({
       className={`flex flex-col bg-background rounded-xl border shadow-sm overflow-hidden ${hasNonFormArtifacts ? "max-w-2xl" : ""}`}
       layout
       initial={{ width: "100%" }}
-      animate={{ width: hasNonFormArtifacts ? "35%" : "100%" }}
+      animate={{ width: hasNonFormArtifacts ? "40%" : "100%" }}
       transition={{
         duration: 0.6,
         ease: [0.4, 0.0, 0.2, 1],
@@ -76,13 +77,12 @@ export function ChatArea({
             className="flex justify-start"
           >
             <div className="max-w-[85%] bg-muted rounded-2xl px-4 py-3 shadow-sm">
-              <div className="font-medium text-sm text-muted-foreground mb-1">
+              <div className="font-medium text-sm text-muted-foreground mb-1 flex items-center gap-2">
+                {getAgentIcon()}
                 Hive
               </div>
               <div className="text-sm">
-                {lastLogLine
-                  ? lastLogLine
-                  : `Communicating with workflow...`}
+                {lastLogLine ? lastLogLine : `Communicating with workflow...`}
               </div>
               {/* Optional: Add a subtle loading indicator */}
               {isChainVisible && (
